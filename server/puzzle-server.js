@@ -22,4 +22,7 @@ if (Meteor.isServer) {
       return sequence;
     }
   });
+  Meteor.publish('sequence', function () {
+    return sequence;
+  });
 }

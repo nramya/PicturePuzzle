@@ -63,4 +63,6 @@ if (Meteor.isClient) {
     Template.puzzleBoard.__helpers.get('splitImage', ctx, buffer, bufferCtx, tiles);
     Template.puzzleBoard.__helpers.get('displayGrid', tiles);
   };
+
+  Meteor.subscribe('sequence');
 }
