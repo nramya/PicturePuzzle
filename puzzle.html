@@ -1,0 +1,71 @@
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>puzzle</title>
+    <link href='http://fonts.googleapis.com/css?family=Lato:400,700,900' rel='stylesheet' type='text/css'>
+    <script>
+//        document.addEventListener('DOMContentLoaded', function () {
+//            var canvas = document.querySelector('#canvas');
+//            var ctx = canvas.getContext("2d");
+//            var buffer = document.querySelector('#buffer');
+//            var bufferCtx = buffer.getContext('2d');
+//            var imageObj = new Image();
+//            imageObj.src = "assets/baby-tiger.jpg";
+//            var tiles = [];
+//            var tile;
+
+//            function drawCanvas() {
+//                console.log('Drawing image on canvas...');
+//                ctx.clearRect(0, 0, canvas.width, canvas.height);
+//                ctx.drawImage(imageObj, 0, 0);
+//                //splitImage();
+//            }
+
+//            function displayGrid(tiles) {
+//                console.log('Displaying grid...');
+//                var grid = document.createElement('div');
+//                grid.classList.add('grid');
+//                document.querySelector('#puzzle').appendChild(grid);
+//                console.log(sequence);
+//                for(var index = 0; index < 100; index++) {
+//                    var tile = document.createElement('div');
+//                    tile.classList.add('tile');
+//                    grid.appendChild(tile);
+//                    tile.style.backgroundImage = ('url(' + tiles[index].dataUrl + ')');
+//                    tile.setAttribute('draggable','true');
+//                    tile.setAttribute('data-tile-id', tiles[index].id.toString());
+//                }
+//            }
+
+//            function splitImage() {
+//                console.log('Splitting image into tiles...');
+//                for (var i = 0; i < 10; i++) { // across rows
+//                    for (var j = 0; j < 10; j++) { // across columns
+//                        var imageData = ctx.getImageData(j * 60, i * 60, 60, 60);
+//                        bufferCtx.clearRect(0, 0, buffer.width, buffer.height);
+//                        bufferCtx.putImageData(imageData, 0, 0, 0, 0, 60, 60);
+//                        //console.log(typeof imageData, imageData);
+//                        tile = {
+//                            'id': (i+1) * (j+1),
+//                            'dataUrl': buffer.toDataURL()
+//                        };
+//                        tiles.push(tile);
+//                        tile = {};
+//                    }
+//                }
+//                displayGrid(tiles);
+//            }
+
+//            window.addEventListener("load", drawCanvas);
+//            document.querySelector('button').addEventListener('click', function () {
+//                splitImage();
+//            });
+//        });
+    </script>
+</head>
+
+<body>
+    <h1>Solve the puzzle!</h1>
+    <h4>{{sequence}}</h4>
+    {{> puzzleBoard}}
+</body>
