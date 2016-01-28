@@ -50,4 +50,15 @@
     height: 60px;
     width: 60px;
     align-self: flex-start;
+    cursor: move;
+}
+
+[draggable] {
+    /* Required to make elements draggable in old WebKit */
+    -khtml-user-drag: element;
+    -webkit-user-drag: element;
+}
+
+.over {
+    border: 1px dashed black;
 }

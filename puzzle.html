@@ -13,20 +13,68 @@
 //            imageObj.src = "assets/baby-tiger.jpg";
 //            var tiles = [];
 //            var tile;
-
+//            var sourceElement = null;
+//
+//            //Meteor.subscribe('sequence');
+//
 //            function drawCanvas() {
 //                console.log('Drawing image on canvas...');
 //                ctx.clearRect(0, 0, canvas.width, canvas.height);
 //                ctx.drawImage(imageObj, 0, 0);
 //                //splitImage();
 //            }
-
+//
+//            /* DRAG AND DROP */
+//            // Credits: http://www.html5rocks.com/en/tutorials/dnd/basics/
+//
+//            function handleDragStart(e) {
+//                e.target.style.opacity = '0.4';
+//                sourceElement = e.target;
+//                e.dataTransfer.effectAllowed = 'move';
+//                e.dataTransfer.setData('text/html', this.innerHTML);
+//            }
+//
+//            function handleDragOver(e) {
+//                if (e.preventDefault) {
+//                    e.preventDefault(); // Necessary. Allows us to drop.
+//                }
+//                e.dataTransfer.dropEffect = 'move';
+//                return false;
+//            }
+//
+//            function handleDragEnter(e) {
+//                e.target.classList.add('over');
+//            }
+//
+//            function handleDragLeave(e) {
+//                e.target.classList.remove('over');
+//            }
+//
+//            function handleDrop(e) {
+//                if (e.stopPropagation) {
+//                    e.stopPropagation(); // stops the browser from redirecting.
+//                }
+//                if (sourceElement != e.target) {
+//                    swapTiles(sourceElement, e.target);
+//                }
+//                return false;
+//            }
+//
+//            function swapTiles (startTile, endTile) {
+//                var temp = document.createElement('div');
+//                startTile.parentNode.insertBefore(temp, startTile);
+//                endTile.parentNode.insertBefore(startTile, endTile);
+//                temp.parentNode.insertBefore(endTile, temp);
+//                startTile.style.opacity = '1';
+//                temp.parentNode.removeChild(temp);
+//            }
+//
 //            function displayGrid(tiles) {
 //                console.log('Displaying grid...');
 //                var grid = document.createElement('div');
 //                grid.classList.add('grid');
 //                document.querySelector('#puzzle').appendChild(grid);
-//                console.log(sequence);
+//                //console.log(sequence);
 //                for(var index = 0; index < 100; index++) {
 //                    var tile = document.createElement('div');
 //                    tile.classList.add('tile');
@@ -34,9 +82,14 @@
 //                    tile.style.backgroundImage = ('url(' + tiles[index].dataUrl + ')');
 //                    tile.setAttribute('draggable','true');
 //                    tile.setAttribute('data-tile-id', tiles[index].id.toString());
+//                    tile.addEventListener('dragstart', handleDragStart, false);
+//                    tile.addEventListener('dragenter', handleDragEnter, false);
+//                    tile.addEventListener('dragover', handleDragOver, false);
+//                    tile.addEventListener('dragleave', handleDragLeave, false);
+//                    tile.addEventListener('drop', handleDrop, false);
 //                }
 //            }
-
+//
 //            function splitImage() {
 //                console.log('Splitting image into tiles...');
 //                for (var i = 0; i < 10; i++) { // across rows
@@ -55,7 +108,7 @@
 //                }
 //                displayGrid(tiles);
 //            }
-
+//
 //            window.addEventListener("load", drawCanvas);
 //            document.querySelector('button').addEventListener('click', function () {
 //                splitImage();
@@ -66,6 +119,5 @@
 
 <body>
     <h1>Solve the puzzle!</h1>
-    <h4>{{sequence}}</h4>
     {{> puzzleBoard}}
 </body>
