@@ -1,7 +1,7 @@
 if (Meteor.isServer) {
   var sequence = [];
   Meteor.startup(function () {
-    //console.log('Non-empty? ', TilesSequence.findOne());
+    console.log('Non-empty? ', TilesSequence.findOne());
     if (!TilesSequence.findOne()) {
       for (var i = 0; i < 100; ++i) {
         sequence[i] = i + 1;
@@ -27,9 +27,6 @@ if (Meteor.isServer) {
         array[top] = tmp;
       }
       return array;
-    },
-    getSequence: function () {
-      return sequence;
     }
   });
   Meteor.publish('tiles', function () {
