@@ -1,9 +1,13 @@
 if (Meteor.isClient) {
+  Meteor.subscribe('tiles');
+  tiles = TilesSequence.find({}).fetch();
+  console.log('sequence before update: ', tiles);
+  console.log('count', TilesSequence.find({}).count());
 
   Template.puzzleBoard.helpers({
-    sequence: function () {
-      return Session.get('randomSequence');
-    },
+    //sequence: function () {
+    //  return Session.get('randomSequence');
+    //},
 
     drawCanvas: function (canvas, ctx, imageObj) {
       console.log('Drawing image on canvas...');
@@ -23,10 +27,12 @@ if (Meteor.isClient) {
             'id': (i+1) * (j+1),
             'dataUrl': buffer.toDataURL()
           };
-          tiles.push(tile);
+          //tiles.push(tile);
+          Meteor.call('updateTile', tile);
           tile = {};
         }
       }
+      console.log('after update: ', TilesSequence.find().fetch());
     },
 
     displayGrid: function (tiles) {
@@ -34,14 +40,13 @@ if (Meteor.isClient) {
       var grid = document.createElement('div');
       grid.classList.add('grid');
       document.querySelector('#puzzle').appendChild(grid);
-      console.log(sequence);
       for(var index = 0; index < 100; index++) {
-        var tile = document.createElement('div');
-        tile.classList.add('tile');
-        grid.appendChild(tile);
-        tile.style.backgroundImage = ('url(' + tiles[index].dataUrl + ')');
-        tile.setAttribute('draggable','true');
-        tile.setAttribute('data-tile-id', tiles[index].id.toString());
+        var tileElement = document.createElement('div');
+        tileElement.classList.add('tile');
+        grid.appendChild(tileElement);
+        tileElement.style.backgroundImage = ('url(' + tiles[index].dataUrl + ')');
+        tileElement.setAttribute('draggable','true');
+        tileElement.setAttribute('data-tile-id', tiles[index].id.toString());
       }
     }
   });
@@ -53,16 +58,15 @@ if (Meteor.isClient) {
     var bufferCtx = buffer.getContext('2d');
     var imageObj = new Image();
     imageObj.src = "assets/baby-tiger.jpg";
-    var tiles = [];
+    //var tiles = [];
+    //console.log(tiles.fetch());
     Template.puzzleBoard.__helpers.get('drawCanvas', canvas, ctx, imageObj);
 
-    Meteor.call('getSequence', function (err, res) {
-      Session.set('randomSequence', res);
-    });
+    //Meteor.call('getSequence', function (err, res) {
+    //  Session.set('randomSequence', res);
+    //});
 
     Template.puzzleBoard.__helpers.get('splitImage', ctx, buffer, bufferCtx, tiles);
     Template.puzzleBoard.__helpers.get('displayGrid', tiles);
   };
-
-  Meteor.subscribe('sequence');
 }
