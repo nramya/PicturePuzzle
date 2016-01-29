@@ -38,21 +38,36 @@ if (Meteor.isClient) {
     //  console.log('after update: ', TilesSequence.find().fetch());
     //},
 
-    displayGrid: function (tiles) {
-      console.log('Displaying grid...');
-      var grid = document.createElement('div');
-      grid.classList.add('grid');
-      document.querySelector('#puzzle').appendChild(grid);
-      for(var index = 0; index < 100; index++) {
-        var tileElement = document.createElement('div');
-        tileElement.classList.add('tile');
-        grid.appendChild(tileElement);
-        tileElement.style.backgroundImage = ('url(' + tiles[index].dataUrl + ')');
-        tileElement.setAttribute('draggable','true');
-        tileElement.setAttribute('data-tile-id', tiles[index].id.toString());
-      }
-    }
+    //displayGrid: function (tiles) {
+    //  console.log('Displaying grid...');
+    //  var grid = document.createElement('div');
+    //  grid.classList.add('grid');
+    //  document.querySelector('#puzzle').appendChild(grid);
+    //  for(var index = 0; index < 100; index++) {
+    //    var tileElement = document.createElement('div');
+    //    tileElement.classList.add('tile');
+    //    grid.appendChild(tileElement);
+    //    tileElement.style.backgroundImage = ('url(' + tiles[index].dataUrl + ')');
+    //    tileElement.setAttribute('draggable','true');
+    //    tileElement.setAttribute('data-tile-id', tiles[index].id.toString());
+    //  }
+    //}
   });
+
+  function displayGrid(tiles) {
+    console.log('Displaying grid...');
+    var grid = document.createElement('div');
+    grid.classList.add('grid');
+    document.querySelector('#puzzle').appendChild(grid);
+    for(var index = 0; index < 100; index++) {
+      var tileElement = document.createElement('div');
+      tileElement.classList.add('tile');
+      grid.appendChild(tileElement);
+      //tileElement.style.backgroundImage = ('url(' + tiles[index].dataUrl + ')');
+      tileElement.setAttribute('draggable','true');
+      //tileElement.setAttribute('data-tile-id', tiles[index].id.toString());
+    }
+  }
 
   Template.puzzleBoard.rendered = function () {
     sequence = TilesSequence.find().fetch();
@@ -78,35 +93,37 @@ if (Meteor.isClient) {
     //Template.puzzleBoard.__helpers.get('splitImage', ctx, buffer, bufferCtx, tiles);
 
     console.log('Splitting image into tiles...');
-    var tile = {};
-    for (var i = 0; i < 10; i++) { // across rows
-      for (var j = 0; j < 10; j++) { // across columns
-        var imageData = ctx.getImageData(j * 60, i * 60, 60, 60);
-        bufferCtx.clearRect(0, 0, buffer.width, buffer.height);
-        bufferCtx.putImageData(imageData, 0, 0, 0, 0, 60, 60);
-        tile = {
-          'id': (i+1) * (j+1),
-          'dataUrl': buffer.toDataURL()
-        };
-        //tile['_id'] =
-        //tiles.push(tile);
-        //console.log('sending to server to update: ', tile);
-        //console.log('Before: ');
-        for(var x = 0; x < sequence.length; x++) {
-          //console.log(sequence[x]._id);
-          if(sequence[x].tileId === tile.id) {
-            tile._id = sequence[x]._id;
-            //console.log(tile);
-            break;
+    if (!sequenceUpdated) {
+      for (var i = 0; i < 10; i++) { // across rows
+        for (var j = 0; j < 10; j++) { // across columns
+          var tile = {};
+          var imageData = ctx.getImageData(j * 60, i * 60, 60, 60);
+          bufferCtx.clearRect(0, 0, buffer.width, buffer.height);
+          bufferCtx.putImageData(imageData, 0, 0, 0, 0, 60, 60);
+          tile = {
+            'id': (i + 1) * (j + 1),
+            'dataUrl': buffer.toDataURL()
+          };
+          //tile['_id'] =
+          //tiles.push(tile);
+          console.log('sending to server to update: ', tile);
+          //console.log('Before: ');
+          for (var x = 0; x < sequence.length; x++) {
+            //console.log(sequence[x]._id);
+            if (sequence[x].tileId === tile.id) {
+              tile._id = sequence[x]._id;
+              //console.log(tile);
+              break;
+            }
           }
+          Meteor.call('updateTile', tile);
+          var sequenceUpdated = true;
         }
-        Meteor.call('updateTile', tile);
-        tile = {};
       }
     }
     var tiles = TilesSequence.find().fetch();
     console.log('after update: ', tiles);
     //var tiles = Template.puzzleBoard.__helpers.get('tiles');
-    Template.puzzleBoard.__helpers.get('displayGrid', tiles);
+    displayGrid(tiles);
   };
 }
