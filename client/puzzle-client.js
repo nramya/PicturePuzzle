@@ -56,7 +56,7 @@ if (Meteor.isClient) {
 
   Template.puzzleBoard.rendered = function () {
     sequence = TilesSequence.find().fetch();
-    console.log('sequence before update: ', sequence);
+    //console.log('sequence before update: ', sequence);
     var canvas = document.querySelector('#canvas');
     var ctx = canvas.getContext("2d");
     var buffer = document.querySelector('#buffer');
@@ -91,12 +91,12 @@ if (Meteor.isClient) {
         //tile['_id'] =
         //tiles.push(tile);
         //console.log('sending to server to update: ', tile);
-        console.log('Before: ');
+        //console.log('Before: ');
         for(var x = 0; x < sequence.length; x++) {
           //console.log(sequence[x]._id);
           if(sequence[x].tileId === tile.id) {
             tile._id = sequence[x]._id;
-            console.log(tile);
+            //console.log(tile);
             break;
           }
         }

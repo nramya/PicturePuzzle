@@ -9,7 +9,7 @@ if (Meteor.isServer) {
       sequence = Meteor.call('shuffle', sequence);
       //console.log('seq: ', sequence);
       for (var index = 0; index < sequence.length; index++) {
-        TilesSequence.insert({'tileId': sequence[index]});
+        TilesSequence.insert({'tileId': sequence[index], 'dataUrl': ''});
         //console.log("Inserted at i: ", TilesSequence.findOne({'tileId': sequence[index]}));
       }
     }
