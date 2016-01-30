@@ -54,8 +54,13 @@ if (Meteor.isClient) {
     //}
   });
 
+  Template.puzzleBoard.events({
+
+  });
+
   function displayGrid(tiles) {
     console.log('Displaying grid...');
+    //console.log(tiles);
     var grid = document.createElement('div');
     grid.classList.add('grid');
     document.querySelector('#puzzle').appendChild(grid);
@@ -63,9 +68,16 @@ if (Meteor.isClient) {
       var tileElement = document.createElement('div');
       tileElement.classList.add('tile');
       grid.appendChild(tileElement);
-      //tileElement.style.backgroundImage = ('url(' + tiles[index].dataUrl + ')');
+      tileElement.style.backgroundImage = ('url(' + tiles[index].dataUrl + ')');
+      tileElement.setAttribute('data-tile-id', tiles[index].tileId);
+
+      //for (var seqIndex = 0; seqIndex < tiles.length; seqIndex ++) {
+      //  if (tiles[seqIndex].tileId === index) {
+      //    tileElement.style.backgroundImage = ('url(' + tiles[seqIndex].dataUrl + ')');
+      //    tileElement.setAttribute('data-tile-id', tiles[seqIndex].tileId);
+      //  }
+      //}
       tileElement.setAttribute('draggable','true');
-      //tileElement.setAttribute('data-tile-id', tiles[index].id.toString());
     }
   }
 
@@ -79,51 +91,45 @@ if (Meteor.isClient) {
     var imageObj = new Image();
     imageObj.src = "assets/baby-tiger.jpg";
 
-    //var tiles = [];
-    //console.log(tiles.fetch());
-    //Template.puzzleBoard.__helpers.get('drawCanvas', canvas, ctx, imageObj);
+    var tiles = [];
+    var tilesCollection;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(imageObj, 0, 0);
 
-    //Meteor.call('getSequence', function (err, res) {
-    //  Session.set('randomSequence', res);
-    //});
-
-    //Template.puzzleBoard.__helpers.get('splitImage', ctx, buffer, bufferCtx, tiles);
-
     console.log('Splitting image into tiles...');
-    if (!sequenceUpdated) {
-      for (var i = 0; i < 10; i++) { // across rows
-        for (var j = 0; j < 10; j++) { // across columns
-          var tile = {};
-          var imageData = ctx.getImageData(j * 60, i * 60, 60, 60);
-          bufferCtx.clearRect(0, 0, buffer.width, buffer.height);
-          bufferCtx.putImageData(imageData, 0, 0, 0, 0, 60, 60);
-          tile = {
-            'id': (i + 1) * (j + 1),
-            'dataUrl': buffer.toDataURL()
-          };
-          //tile['_id'] =
-          //tiles.push(tile);
-          console.log('sending to server to update: ', tile);
-          //console.log('Before: ');
-          for (var x = 0; x < sequence.length; x++) {
-            //console.log(sequence[x]._id);
-            if (sequence[x].tileId === tile.id) {
-              tile._id = sequence[x]._id;
-              //console.log(tile);
-              break;
-            }
+
+    var tileCounter = 0;
+    for (var i = 1; i <= 10; i++) { // across rows
+      for (var j = 1; j <= 10; j++) { // across columns
+        var tile = {};
+        var imageData = ctx.getImageData(j * 60, i * 60, 60, 60);
+        bufferCtx.clearRect(0, 0, buffer.width, buffer.height);
+        bufferCtx.putImageData(imageData, 0, 0, 0, 0, 60, 60);
+        tile = {
+          'tileId': ++tileCounter,
+          'dataUrl': buffer.toDataURL()
+        };
+        for (var x = 0; x < sequence.length; x++) {
+          if (sequence[x].tileId === tile.tileId) {
+            tile._id = sequence[x]._id;
+            //console.log(tile);
+            break;
           }
-          Meteor.call('updateTile', tile);
-          var sequenceUpdated = true;
         }
+        tiles.push(tile);
+        //console.log('calling updateTile for: ', tile.tileId);
       }
     }
-    var tiles = TilesSequence.find().fetch();
-    console.log('after update: ', tiles);
+
+    Meteor.apply('updateTile', tiles, function () {
+      //console.log('returned tileId', tileId);
+      tilesCollection = TilesSequence.find({}).fetch();
+      //console.log(tilesCollection);
+      displayGrid(tilesCollection);
+    });
+
     //var tiles = Template.puzzleBoard.__helpers.get('tiles');
-    displayGrid(tiles);
+
   };
 }

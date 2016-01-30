@@ -1,19 +1,18 @@
 if (Meteor.isServer) {
   var sequence = [];
   Meteor.startup(function () {
-    console.log('Non-empty? ', TilesSequence.findOne());
+    //console.log('Non-empty? ', TilesSequence.findOne());
     if (!TilesSequence.findOne()) {
-      for (var i = 0; i < 100; ++i) {
-        sequence[i] = i + 1;
+      for (var seqIndex = 0; seqIndex < 100; ++seqIndex) {
+        sequence[seqIndex] = seqIndex + 1;
       }
       sequence = Meteor.call('shuffle', sequence);
-      //console.log('seq: ', sequence);
-      for (var index = 0; index < sequence.length; index++) {
-        TilesSequence.insert({'tileId': sequence[index], 'dataUrl': ''});
-        //console.log("Inserted at i: ", TilesSequence.findOne({'tileId': sequence[index]}));
+      //console.log('seq length: ', sequence.length);
+      for (var shuffledIndex = 0; shuffledIndex < sequence.length; shuffledIndex++) {
+        TilesSequence.insert({'tileId': sequence[shuffledIndex], 'dataUrl': ''});
       }
     }
-
+    //console.log(TilesSequence.find().fetch());
   });
   Meteor.methods({
     shuffle: function (array) {
@@ -26,6 +25,7 @@ if (Meteor.isServer) {
         array[current] = array[top];
         array[top] = tmp;
       }
+      console.log(array);
       return array;
     }
   });
