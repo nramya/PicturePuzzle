@@ -1,0 +1,1 @@
+Meteor application for Jigsaw Puzzle
