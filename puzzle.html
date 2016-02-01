@@ -24,51 +24,6 @@
 //                splitImage();
 //            }
 //
-//            /* DRAG AND DROP */
-//            // Credits: http://www.html5rocks.com/en/tutorials/dnd/basics/
-//
-//            function handleDragStart(e) {
-//                e.target.style.opacity = '0.4';
-//                sourceElement = e.target;
-//                e.dataTransfer.effectAllowed = 'move';
-//                e.dataTransfer.setData('text/html', this.innerHTML);
-//            }
-//
-//            function handleDragOver(e) {
-//                if (e.preventDefault) {
-//                    e.preventDefault(); // Necessary. Allows us to drop.
-//                }
-//                e.dataTransfer.dropEffect = 'move';
-//                return false;
-//            }
-//
-//            function handleDragEnter(e) {
-//                e.target.classList.add('over');
-//            }
-//
-//            function handleDragLeave(e) {
-//                e.target.classList.remove('over');
-//            }
-//
-//            function handleDrop(e) {
-//                if (e.stopPropagation) {
-//                    e.stopPropagation(); // stops the browser from redirecting.
-//                }
-//                if (sourceElement != e.target) {
-//                    swapTiles(sourceElement, e.target);
-//                }
-//                return false;
-//            }
-//
-//            function swapTiles (startTile, endTile) {
-//                var temp = document.createElement('div');
-//                startTile.parentNode.insertBefore(temp, startTile);
-//                endTile.parentNode.insertBefore(startTile, endTile);
-//                temp.parentNode.insertBefore(endTile, temp);
-//                startTile.style.opacity = '1';
-//                temp.parentNode.removeChild(temp);
-//            }
-//
 //            function displayGrid(tiles) {
 //                console.log('Displaying grid...');
 //                var grid = document.createElement('div');
@@ -82,11 +37,6 @@
 //                    tile.style.backgroundImage = ('url(' + tiles[index].dataUrl + ')');
 //                    tile.setAttribute('draggable','true');
 //                    tile.setAttribute('data-tile-id', tiles[index].id.toString());
-//                    tile.addEventListener('dragstart', handleDragStart, false);
-//                    tile.addEventListener('dragenter', handleDragEnter, false);
-//                    tile.addEventListener('dragover', handleDragOver, false);
-//                    tile.addEventListener('dragleave', handleDragLeave, false);
-//                    tile.addEventListener('drop', handleDrop, false);
 //                }
 //            }
 //

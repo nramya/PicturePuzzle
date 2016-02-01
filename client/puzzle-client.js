@@ -1,23 +1,53 @@
 if (Meteor.isClient) {
   var sequence;
   Meteor.subscribe('tiles', function() {
-    console.log(TilesSequence.find().fetch());
   });
-
-  //console.log('data: ', TilesSequence.find().fetch());
-
 
   Template.puzzleBoard.helpers({
 
   });
 
+  /* DRAG AND DROP */
+  // Credits: http://www.html5rocks.com/en/tutorials/dnd/basics/
   Template.puzzleBoard.events({
-
+    'dragstart .tile': function (e) {
+      e.target.style.opacity = '0.4';
+      startTile = e.target;
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/html', this.innerHTML);
+    },
+    'dragenter .tile': function (e) {
+      e.target.classList.add('over');
+    },
+    'dragover .tile': function (e) {
+      if (e.preventDefault) {
+        e.preventDefault(); // Necessary. Allows us to drop.
+      }
+      e.dataTransfer.dropEffect = 'move';
+      return false;
+    },
+    'dragleave .tile': function (e) {
+      e.target.classList.remove('over');
+    },
+    'drop .tile': function (e) {
+      if (e.stopPropagation) {
+        e.stopPropagation(); // stops the browser from redirecting.
+      }
+      if (startTile != e.target) {
+        var endTile = e.target;
+        var temp = document.createElement('div');
+        startTile.parentNode.insertBefore(temp, startTile);
+        endTile.parentNode.insertBefore(startTile, endTile);
+        temp.parentNode.insertBefore(endTile, temp);
+        startTile.style.opacity = '1';
+        temp.parentNode.removeChild(temp);
+      }
+      return false;
+    }
   });
 
   function displayGrid(tiles) {
     console.log('Displaying grid...');
-    console.log(tiles);
     var grid = document.createElement('div');
     grid.classList.add('grid');
     document.querySelector('#puzzle').appendChild(grid);
@@ -34,7 +64,6 @@ if (Meteor.isClient) {
   Template.puzzleBoard.rendered = function () {
     Meteor.subscribe('tiles', function() {
       sequence = TilesSequence.find().fetch();
-      console.log('sequence before update: ', sequence);
       var canvas = document.querySelector('#canvas');
       var ctx = canvas.getContext("2d");
       var buffer = document.querySelector('#buffer');
@@ -43,7 +72,6 @@ if (Meteor.isClient) {
       imageObj.src = "assets/baby-tiger.jpg";
 
       var tiles = [];
-      //var tilesCollection;
       var tileCounter = 0;
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -68,20 +96,12 @@ if (Meteor.isClient) {
               }
             }
             tiles.push(tile);
-            //console.log('Before update: ', tiles);
-
-            Meteor.apply('updateTile', tiles, function (err, res) {
-              console.log('error? ', err, 'result? ', res);
-              console.log(TilesSequence.find().fetch());
-            });
           }
         }
+        Meteor.apply('updateTile', tiles, function (err, res) {
+          displayGrid(TilesSequence.find().fetch());
+        });
       };
     });
-
-
-
-    //var tiles = Template.puzzleBoard.__helpers.get('tiles');
-
   };
 }
