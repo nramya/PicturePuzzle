@@ -27,9 +27,13 @@
     position: relative;
 }
 
-.hidden {
-    display: none;
+#buffer {
+    border: 1px solid black;
 }
+
+/*.hidden {*/
+    /*display: none;*/
+/*}*/
 
 .grid {
     margin: 0;
